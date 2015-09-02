@@ -1,0 +1,87 @@
+package splash;
+
+import org.newdawn.slick.*;
+import data.Arjong;
+import java.io.*;
+
+public class SplashLoad extends BasicGame{
+	private Image mouse,bg,bar;
+	private Font font,font2;
+	private Music music;
+	private int min,max = 100;
+	private int delay = 100;
+	
+	public SplashLoad(){
+		super("Window Arjong Project");
+	}
+	
+	public static void main(String[] args) throws SlickException{
+		AppGameContainer container = new AppGameContainer(new SplashLoad(),1024,768,true);
+		
+		container.setMouseGrabbed(true);
+		container.start();
+	}
+	
+	public void ConfigBeforeGame(GameContainer container){
+		try{
+			
+			container.exit();
+		}catch(IOException e){
+			System.out.println(e);
+		}catch(SlickException e){
+			System.out.println(e);
+		}
+	}
+	
+	public void init(GameContainer gc) throws SlickException{
+		gc.setShowFPS(false);
+		gc.setVSync(true);
+		
+		String urlImage = "Resource/img/";
+		String urlFonts = "Resource/font/";
+		String urlMusic = "Resource/audio/bgm/";
+		String urlSound = "Resource/audio/bgs/";
+		
+		this.bar = new Image(urlImage+"bar.png");
+		this.bg = new Image(urlImage+"LoadSplash.png");
+		this.mouse = new Image(urlImage+"cursor.png");
+		this.music = new Music(urlMusic+"splash.wav");
+		
+		this.font = new AngelCodeFont(urlFonts+"font_01.fnt",urlFonts+"font_01.png");
+		this.font2 = new AngelCodeFont(urlFonts+"simpleFont.fnt",urlFonts+"simpleFont.png");
+		
+		
+		music.play();
+		music.loop();
+	}
+	
+	public void update(GameContainer gc,int delta) throws SlickException{
+	}
+	
+	public void render(GameContainer gc,Graphics g) throws SlickException{
+		Input input = gc.getInput();
+		g.drawImage(this.bg,0,0);
+		g.drawImage(this.mouse,input.getMouseX(),input.getMouseY());
+		drawBar(227,615,(int)(bar.getWidth()*((double)min/max)),bar.getHeight()-2,new Color(50,30,20));
+		g.setFont(font);
+		g.drawString("Arjong มหาสงครามศึกแผ่นดิผู้กล้า Version 1.5",(1024-font.getWidth("Arjong มหาสงครามศึกแผ่นดิผู้กล้า Version 1.5"))/2,665);
+		
+		if(min<max){
+			if(delay > 0){
+				delay--;
+			}else{
+				min+=(int)(1+Math.random()*15);
+				delay = (int)(20+Math.random()*100);
+			}
+		}else this.ConfigBeforeGame(gc);
+	}
+	
+	public void drawBar(int x,int y,int min,int max,Color c){
+		Graphics g = new Graphics();
+		
+		g.setColor(c);
+		g.fillRoundRect(x,y,min,max,5);
+		g.setColor(new Color(255,255,255,50));
+		g.fillRoundRect(x,y,min,max/2,5);
+	}
+}
